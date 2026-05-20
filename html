@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Chenlyn - Manajer Jajan Favorit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Poppins', 'Quicksand', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #fef9e6 0%, #fff3e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container utama aplikasi */
+        .app-container {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 248, 235, 0.95);
+            border-radius: 56px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(255,255,255,0.8);
+            backdrop-filter: blur(2px);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* Header Chenlyn */
+        .brand-header {
+            background: #aa7c5c;
+            background-image: radial-gradient(circle at 10% 30%, #c4906e, #8b5a3e);
+            padding: 1.8rem 1.5rem 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .brand-header h1 {
+            font-size: 2.6rem;
+            letter-spacing: 2px;
+            font-weight: 800;
+            color: #ffefcf;
+            text-shadow: 3px 3px 0 #5e3a24;
+            word-break: keep-all;
+        }
+
+        .brand-header p {
+            color: #ffe1b3;
+            font-weight: 500;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* dompet saldo */
+        .wallet-card {
+            background: #fff3e8;
+            margin: 20px 20px 0 20px;
+            padding: 1.2rem 1.5rem;
+            border-radius: 48px;
+            box-shadow: 0 8px 18px rgba(100, 60, 20, 0.1), inset 0 1px 0 rgba(255,255,240,0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .saldo-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .saldo-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #b47c55;
+            letter-spacing: 1px;
+        }
+
+        .saldo-nominal {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #3b2a21;
+            line-height: 1;
+        }
+
+        .saldo-nominal span {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #b87a53;
+        }
+
+        .btn-topup {
+            background: #5f8b6f;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 60px;
+            font-weight: 700;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-topup:hover {
+            background: #4a705b;
+            transform: scale(0.96);
+        }
+
+        /* daftar menu jajan (Cilok, Seblak, Kopi, Baso) */
+        .menu-section {
+            padding: 22px 20px 10px 20px;
+        }
+
+        .menu-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #6b3f28;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 6px solid #e09d6e;
+            padding-left: 16px;
+        }
+
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* item card */
+        .menu-item {
+            background: white;
+            border-radius: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 12px 20px;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            border: 1px solid #ffddbc;
+            cursor: pointer;
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
+            background: #fff9f2;
+        }
+
+        .menu-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .menu-emoji {
+            font-size: 2.4rem;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .menu-detail h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #4c2f1d;
+        }
+
+        .menu-price {
+            font-weight: 600;
+            color: #bf7c50;
+            background: #fff0e4;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .menu-action {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fef3ea;
+            padding: 6px 12px;
+            border-radius: 60px;
+        }
+
+        .qty-btn {
+            background: #e7cbb8;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #5a3723;
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:active {
+            background: #d6b597;
+            transform: scale(0.92);
+        }
+
+        .qty-number {
+            font-weight: 800;
+            font-size: 1.2rem;
+            min-width: 32px;
+            text-align: center;
+            color: #402b1d;
+        }
+
+        .btn-beli {
+            background: #e08f62;
+            border: none;
+            border-radius: 36px;
+            padding: 8px 18px;
+            font-weight: 700;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-beli:active {
+            background: #c27148;
+            transform: scale(0.95);
+        }
+
+        /* keranjang & riwayat */
+        .cart-section {
+            background: #fff7ef;
+            margin: 15px 20px 25px 20px;
+            border-radius: 44px;
+            padding: 18px;
+            box-shadow: inset 0 1px 3px #ffeee0, 0 6px 12px rgba(0,0,0,0.05);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px dashed #ecc8ae;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+
+        .cart-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #9b6a49;
+        }
+
+        .clear-cart {
+            background: none;
+            border: none;
+            color: #bf8b68;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .cart-list {
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+            padding-right: 6px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            background: #ffffffcc;
+            border-radius: 60px;
+            padding: 8px 14px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .cart-item-name {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cart-total {
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-align: right;
+            border-top: 1px solid #f0d5bd;
+            padding-top: 12px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            background: #6e9f7c;
+            border: none;
+            padding: 14px;
+            border-radius: 44px;
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 6px 0 #3c5a48;
+        }
+
+        .btn-checkout:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #3c5a48;
+        }
+
+        /* riwayat transaksi */
+        .history-section {
+            margin: 8px 20px 25px 20px;
+            background: #fef1e6;
+            border-radius: 36px;
+            padding: 12px 18px;
+        }
+
+        .history-header {
+            font-weight: 700;
+            color: #ad7652;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.75rem;
+            margin-top: 12px;
+            color: #674f3a;
+        }
+
+        .history-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #f2dac8;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .reset-history {
+            background: none;
+            border: none;
+            font-size: 0.7rem;
+            color: #be7c56;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: #b99173;
+            padding: 15px 0 20px;
+        }
+
+        button {
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="brand-header">
+        <h1>🍢 chenlyn</h1>
+        <p>kelola jajan · catat pengeluaran · seru!</p>
+    </div>
+
+    <!-- saldo / uang jajan -->
+    <div class="wallet-card">
+        <div class="saldo-info">
+            <div class="saldo-label">💸 sisa uang jajan</div>
+            <div class="saldo-nominal">Rp <span id="saldoValue">50000</span></div>
+        </div>
+        <button class="btn-topup" id="topupBtn">➕ Top Up Saldo</button>
+    </div>
+
+    <!-- menu utama : cilok, seblak, kopi, baso (bisa diklik) -->
+    <div class="menu-section">
+        <div class="menu-title">🍽️ menu favorit • klik untuk jajan</div>
+        <div class="menu-grid" id="menuGrid"></div>
+    </div>
+
+    <!-- keranjang belanja (pending) -->
+    <div class="cart-section">
+        <div class="cart-header">
+            <h3>🛒 antrian jajan</h3>
+            <button class="clear-cart" id="clearCartBtn">kosongkan</button>
+        </div>
+        <div id="cartList" class="cart-list">
+            <div style="text-align: center; color:#c7a484;">keranjang kosong</div>
+        </div>
+        <div class="cart-total">
+            <span>total sementara:</span>
+            <strong id="cartTotalAmount">Rp 0</strong>
+        </div>
+        <button class="btn-checkout" id="checkoutBtn">🍜 Bayar & Catat</button>
+    </div>
+
+    <!-- riwayat transaksi -->
+    <div class="history-section">
+        <div class="history-header">
+            📋 riwayat jajan
+            <button class="reset-history" id="resetHistoryBtn">hapus riwayat</button>
+        </div>
+        <div id="historyList" class="history-list">
+            <div>✨ belum ada transaksi. beli yuk!</div>
+        </div>
+    </div>
+    <footer>🍡 chenlyn • catatan jajan pintar</footer>
+</div>
+
+<script>
+    // ---------- DATA MENU (cilok, seblak, kopi, baso) dengan harga unik
+    const MENU_DATA = [
+        { id: 'cilok', name: 'Cilok', emoji: '🍡', price: 8000 },
+        { id: 'seblak', name: 'Seblak', emoji: '🍲', price: 12000 },
+        { id: 'kopi', name: 'Kopi', emoji: '☕', price: 7000 },
+        { id: 'baso', name: 'Bakso', emoji: '🥣', price: 15000 }
+    ];
+
+    // State aplikasi
+    let saldo = 50000;          // saldo awal
+    let cart = [];              // [{ id, name, price, quantity }]
+    let history = [];           // [{ id, timestamp, items, totalSpent }]
+
+    // DOM elements
+    const saldoSpan = document.getElementById('saldoValue');
+    const menuGrid = document.getElementById('menuGrid');
+    const cartListDiv = document.getElementById('cartList');
+    const cartTotalSpan = document.getElementById('cartTotalAmount');
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const historyListDiv = document.getElementById('historyList');
+    const topupBtn = document.getElementById('topupBtn');
+    const resetHistoryBtn = document.getElementById('resetHistoryBtn');
+
+    // Helper: update tampilan saldo
+    function updateSaldoUI() {
+        saldoSpan.innerText = saldo.toLocaleString('id-ID');
+    }
+
+    // Hitung total keranjang
+    function computeCartTotal() {
+        return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
+
+    // Render keranjang (list + total)
+    function renderCart() {
+        if (!cartListDiv) return;
+        if (cart.length === 0) {
+            cartListDiv.innerHTML = '<div style="text-align: center; color:#c7a484;">🍃 keranjang kosong</div>';
+            cartTotalSpan.innerText = 'Rp 0';
+            return;
+        }
+        let html = '';
+        cart.forEach((item, idx) => {
+            const itemTotal = item.price * item.quantity;
+            html += `
+                <div class="cart-item">
+                    <div class="cart-item-name">
+                        <span>${MENU_DATA.find(m => m.id === item.id)?.emoji || '🍢'} ${item.name}</span>
+                        <span style="font-weight:600">x${item.quantity}</span>
+                    </div>
+                    <div style="font-weight:500">Rp ${itemTotal.toLocaleString('id-ID')}</div>
+                </div>
+            `;
+        });
+        cartListDiv.innerHTML = html;
+        const totalCart = computeCartTotal();
+        cartTotalSpan.innerText = `Rp ${totalCart.toLocaleString('id-ID')}`;
+    }
+
+    // Render history
+    function renderHistory() {
+        if (!historyListDiv) return;
+        if (history.length === 0) {
+            historyListDiv.innerHTML = '<div>✨ belum ada transaksi. beli yuk!</div>';
+            return;
+        }
+        let histHtml = '';
+        // tampilkan terbaru di atas (descending by timestamp)
+        [...history].reverse().forEach(trans => {
+            const date = new Date(trans.timestamp);
+            const timeStr = `${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}`;
+            let itemsDetail = trans.items.map(it => `${it.qty} ${it.name}`).join(', ');
+            histHtml += `
+                <div class="history-item">
+                    <span>🕒 ${timeStr}</span>
+                    <span><strong>${itemsDetail}</strong> → Rp ${trans.totalSpent.toLocaleString('id-ID')}</span>
+                </div>
+            `;
+        });
+        historyListDiv.innerHTML = histHtml;
+    }
+
+    // Simpan data ke localStorage (opsional untuk pengalaman lebih baik)
+    function saveToLocal() {
+        const dataToStore = {
+            saldo: saldo,
+            cart: cart,
+            history: history
+        };
+        localStorage.setItem('chenlyn_jajan_data', JSON.stringify(dataToStore));
+    }
+
+    // Load dari localStorage
+    function loadFromLocal() {
+        const saved = localStorage.getItem('chenlyn_jajan_data');
+        if (!saved) return;
+        try {
+            const parsed = JSON.parse(saved);
+            if (typeof parsed.saldo === 'number') saldo = parsed.saldo;
+            if (Array.isArray(parsed.cart)) cart = parsed.cart;
+            if (Array.isArray(parsed.history)) history = parsed.history;
+            updateSaldoUI();
+            renderCart();
+            renderHistory();
+        } catch(e) { console.warn(e); }
+    }
+
+    // Fungsi untuk menambah item ke keranjang (dari tombol +/- / beli instan dari card klik) 
+    // Tapi kita buat lebih intuitif: setiap menu item bisa ditambah qty via tombol + / - , 
+    // dan juga kartu menu bisa di klik untuk menambah item +1 langsung (karena "bisa di klik" sesuai permintaan)
+    function addToCart(menuId, quantity = 1) {
+        const menu = MENU_DATA.find(m => m.id === menuId);
+        if (!menu) return;
+        const existing = cart.find(item => item.id === menuId);
+        if (existing) {
+            existing.quantity += quantity;
+            if (existing.quantity <= 0) {
+                // jika quantity menjadi 0, hapus dari keranjang
+                const idx = cart.indexOf(existing);
+                if (idx !== -1) cart.splice(idx, 1);
+            }
+        } else if (quantity > 0) {
+            cart.push({
+                id: menu.id,
+                name: menu.name,
+                price: menu.price,
+                quantity: quantity
+            });
+        }
+        renderCart();
+        saveToLocal();
+    }
+
+    // Kurangi dari keranjang (untuk tombol -)
+    function removeFromCart(menuId) {
+        const existingIdx = cart.findIndex(item => item.id === menuId);
+        if (existingIdx === -1) return;
+        const item = cart[existingIdx];
+        if (item.quantity > 1) {
+            item.quantity -= 1;
+        } else {
+            cart.splice(existingIdx, 1);
+        }
+        renderCart();
+        saveToLocal();
+    }
+
+    // Proses checkout: bayar dari saldo, kurangi, catat history, reset keranjang
+    function checkout() {
+        if (cart.length === 0) {
+            alert("🍽️ keranjang masih kosong, pilih jajan dulu yaa!");
+            return;
+        }
+        const totalBelanja = computeCartTotal();
+        if (saldo < totalBelanja) {
+            alert(`⚠️ Saldo tidak cukup! Kamu butuh Rp ${totalBelanja.toLocaleString('id-ID')}, tapi saldo hanya Rp ${saldo.toLocaleString('id-ID')}. Top up dulu yuk!`);
+            return;
+        }
+        // proses pembayaran
+        saldo -= totalBelanja;
+        updateSaldoUI();
+
+        // simpan transaksi ke history
+        const itemsCopy = cart.map(item => ({
+            name: item.name,
+            qty: item.quantity,
+            price: item.price
+        }));
+        history.push({
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            items: itemsCopy,
+            totalSpent: totalBelanja
+        });
+        // kosongkan keranjang
+        cart = [];
+        renderCart();
+        renderHistory();
+        saveToLocal();
+        alert(`✅ Berhasil membayar Rp ${totalBelanja.toLocaleString('id-ID')}. Selamat menikmati! 🎉`);
+    }
+
+    // Top up saldo (tambah uang jajan)
+    function topUpSaldo() {
+        let jumlah = prompt("Masukkan nominal top up (Rp):", "20000");
+        if (jumlah === null) return;
+        let nominal = parseInt(jumlah.replace(/[^0-9]/g, ''));
+        if (isNaN(nominal) || nominal <= 0) {
+            alert("Masukkan angka positif yang valid!");
+            return;
+        }
+        saldo += nominal;
+        updateSaldoUI();
+        saveToLocal();
+        alert(`💵 Top up berhasil! +Rp ${nominal.toLocaleString('id-ID')}. Saldo sekarang Rp ${saldo.toLocaleString('id-ID')}`);
+    }
+
+    // reset history
+    function resetHistory() {
+        if (history.length && confirm("Hapus seluruh riwayat transaksi? Data tidak dapat dikembalikan.")) {
+            history = [];
+            renderHistory();
+            saveToLocal();
+        } else if (history.length === 0) {
+            alert("Belum ada riwayat yang bisa dihapus.");
+        }
+    }
+
+    // hapus keranjang
+    function clearCart() {
+        if (cart.length === 0) return;
+        if (confirm("Kosongkan semua item di keranjang?")) {
+            cart = [];
+            renderCart();
+            saveToLocal();
+        }
+    }
+
+    // Generate menu card dengan kontrol +/- dan juga klik pada card utama untuk langsung +1
+    function buildMenuCards() {
+        if (!menuGrid) return;
+        menuGrid.innerHTML = '';
+        MENU_DATA.forEach(menu => {
+            // dapatkan qty dari keranjang untuk ditampilkan
+            const cartItem = cart.find(c => c.id === menu.id);
+            const currentQty = cartItem ? cartItem.quantity : 0;
+
+            const card = document.createElement('div');
+            card.className = 'menu-item';
+            // menambahkan event klik pada seluruh card untuk menambah ke keranjang (seperti "bisa di klik")
+            card.addEventListener('click', (e) => {
+                // supaya tidak bentrok dengan tombol aksi yang di dalam card (tombol + / -)
+                // jika target bukan tombol atau span di dalam area action, lakukan add 1
+                const isActionBtn = e.target.closest('.menu-action');
+                if (!isActionBtn) {
+                    addToCart(menu.id, 1);
+                    // sedikit animasi visual feedback
+                    card.style.transform = 'scale(0.97)';
+                    setTimeout(() => { card.style.transform = ''; }, 120);
+                }
+            });
+
+            // bagian kiri (info menu)
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'menu-info';
+            infoDiv.innerHTML = `
+                <div class="menu-emoji">${menu.emoji}</div>
+                <div class="menu-detail">
+                    <h3>${menu.name}</h3>
+                    <div class="menu-price">Rp ${menu.price.toLocaleString('id-ID')}</div>
+                </div>
+            `;
+
+            // bagian kanan (tombol +/- dan jumlah sementara, serta tombol beli cepat)
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'menu-action';
+            // tombol minus
+            const minusBtn = document.createElement('button');
+            minusBtn.innerText = '−';
+            minusBtn.className = 'qty-btn';
+            minusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const existing = cart.find(c => c.id === menu.id);
+                if (existing && existing.quantity > 0) {
+                    removeFromCart(menu.id);
+                    updateQtyDisplay(menu.id, card);
+                } else {
+                    alert('Tidak ada item di keranjang untuk dikurangi');
+                }
+            });
+            const qtySpan = document.createElement('span');
+            qtySpan.className = 'qty-number';
+            qtySpan.id = `qty-${menu.id}`;
+            qtySpan.innerText = currentQty;
+            const plusBtn = document.createElement('button');
+            plusBtn.innerText = '+';
+            plusBtn.className = 'qty-btn';
+            plusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToCart(menu.id, 1);
+                updateQtyDisplay(menu.id, card);
+            });
+            // tombol beli langsung (beli tanpa lihat keranjang / langsung proses? sesuai konsep keuangan jajan: menambah ke keranjang)
+            const buyBtn = document.createElement('button');
+            buyBtn.innerText = 'Beli';
+            buyBtn.className = 'btn-beli';
+            buyBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToCart(menu.id, 1);
+                updateQtyDisplay(menu.id, card);
+                // feedback kecil
+                buyBtn.style.transform = 'scale(0.9)';
+                setTimeout(() => { buyBtn.style.transform = ''; }, 100);
+            });
+            actionDiv.appendChild(minusBtn);
+            actionDiv.appendChild(qtySpan);
+            actionDiv.appendChild(plusBtn);
+            actionDiv.appendChild(buyBtn);
+            card.appendChild(infoDiv);
+            card.appendChild(actionDiv);
+            menuGrid.appendChild(card);
+        });
+    }
+
+    // fungsi update qty display pada card tanpa rebuild seluruh menu
+    function updateQtyDisplay(menuId, cardElement) {
+        const qtySpan = cardElement.querySelector('.qty-number');
+        if (qtySpan) {
+            const cartItem = cart.find(c => c.id === menuId);
+            const newQty = cartItem ? cartItem.quantity : 0;
+            qtySpan.innerText = newQty;
+        }
+        // juga render ulang cart karena perubahan terjadi
+        renderCart();
+        saveToLocal();
+    }
+
+    // untuk sinkronisasi ketika cart diupdate dari luar (add/remove/checkout/clear) kita perlu refresh tampilan qty di setiap card
+    function refreshAllQuantities() {
+        const menuCards = document.querySelectorAll('.menu-item');
+        MENU_DATA.forEach((menu, idx) => {
+            const card = menuCards[idx];
+            if (card) {
+                const qtySpan = card.querySelector('.qty-number');
+                if (qtySpan) {
+                    const cartItem = cart.find(c => c.id === menu.id);
+                    qtySpan.innerText = cartItem ? cartItem.quantity : 0;
+                }
+            }
+        });
+        renderCart();
+    }
+
+    // Override beberapa fungsi agar ikut refresh qty di menu
+    const originalAddToCart = addToCart;
+    window.addToCart = addToCart;
+    const originalRemoveFromCart = removeFromCart;
+
+    // patch biar sync
+    function patchedAddToCart(menuId, quantity =1) {
+        originalAddToCart(menuId, quantity);
+        refreshAllQuantities();
+    }
+    function patchedRemoveFromCart(menuId) {
+        removeFromCart(menuId);
+        refreshAllQuantities();
+    }
+
+    // replace references
+    window.addToCart = patchedAddToCart;
+    window.removeFromCart = patchedRemoveFromCart;
+    // tetep panggil fungsi asli juga karena di event listener kita pakai addToCart dan removeFromCart yang sudah global
+    // rebuild agar terintegrasi
+    function rewireButtons() {
+        // setelah rebuild menu card, event listener menggunakan fungsi global addToCart & removeFromCart yang sudah patched.
+        buildMenuCards();
+        refreshAllQuantities();
+    }
+
+    // event binding utama, ganti listener checkout, topup, clear, reset.
+    checkoutBtn.onclick = () => { checkout(); refreshAllQuantities(); };
+    topupBtn.onclick = () => topUpSaldo();
+    clearCartBtn.onclick = () => { clearCart(); refreshAllQuantities(); };
+    resetHistoryBtn.onclick = () => resetHistory();
+
+    // load awal, inisialisasi
+    loadFromLocal();
+    buildMenuCards();
+    renderCart();
+    renderHistory();
+    updateSaldoUI();
+    refreshAllQuantities();
+
+    // tambahan: agar setiap perubahan dari cart (misal checkout & clear) refresh tampilan qty di card
+    const origCheckout = checkout;
+    window.checkout = function() {
+        origCheckout();
+        refreshAllQuantities();
+    };
+    checkout = window.checkout;
+    const origClearCart = clearCart;
+    window.clearCart = function() {
+        origClearCart();
+        refreshAllQuantities();
+    };
+    clearCart = window.clearCart;
+    checkoutBtn.onclick = () => { window.checkout(); };
+    clearCartBtn.onclick = () => { window.clearCart(); };
+    topupBtn.onclick = () => topUpSaldo();
+    resetHistoryBtn.onclick = () => resetHistory();
+
+    // untuk state cart dari event add/remove manual, sudah terhandle patched.
+</script>
+</body>
+</html>
